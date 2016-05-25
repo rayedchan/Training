@@ -9,9 +9,16 @@ class myCode
         //System.out.println(mostFrequentNgram("DANDAN", 2));
         //System.out.println(mostFrequentNgramRetry("DANDAN", 2));
     	
-    	System.out.println(mostFrequentNgramFinal("DANDAN", 2));
-    	System.out.println(mostFrequentNgramFinal("DANDAN", 3));
-    	System.out.println(mostFrequentNgramFinal("ABCDEFAB", 2));
+    	//System.out.println(mostFrequentNgramBoundary("DANDAN", 2));
+    	//System.out.println(mostFrequentNgramBoundary("DANDAN", 3));
+    	//System.out.println(mostFrequentNgramBoundary("ABCDEFAB", 2));
+    	
+    	System.out.println(mostFrequentNgramOffset("DANDAN", 2));
+    	System.out.println(mostFrequentNgramOffset("DANDAN", 3));
+    	System.out.println(mostFrequentNgramOffset("ABCDEFAB", 2));
+    	System.out.println(mostFrequentNgramOffset("ABCDEFAB", 20));
+    	System.out.println(mostFrequentNgramOffset(null, 20));
+    	System.out.println(mostFrequentNgramOffset("ABCDEFAB", 8));
     }
     
     /*
@@ -25,12 +32,81 @@ class myCode
     */
     
     /**
+     * Enumerate all possible N-length subsets of a String using a offset
+     * @param input
+     * @param n
+     * @return
+     */
+    private static String mostFrequentNgramOffset(String input, int n)
+    {
+    	// Null case va;idation
+    	if(input == null)
+    	{
+    		return "";
+    	}
+    		
+    	// Stores the results
+        HashMap<String, Integer> map = new HashMap<String, Integer>();
+
+        // Initial length of input
+        int length = input.length();
+        
+        // Starting position for grouping
+        int offset = 0;
+        
+        // Continue iteration until offset does not exceed input length
+        // or when (n + offset) does not exceed input length
+        while(offset < length && ((n + offset) <= length))
+        {
+        	int startIndex = 0 + offset;
+        	int endIndex = n + offset;
+        	String key = input.substring(startIndex, endIndex);
+        	
+        	// First occurrence
+            if(map.get(key) == null)
+            {
+                map.put(key, 1);
+            }
+            
+            // Duplicate Key
+            else
+            {
+                map.put(key, map.get(key) + 1);
+            }
+            
+            offset++; // increase to start at a different initial position
+        }
+
+        System.out.println(map);
+        
+        Iterator<Map.Entry<String,Integer>> it = map.entrySet().iterator();
+        String maxKey = "";
+        int maxCount = 0;
+        
+        // Find Max Key
+        while(it.hasNext())
+        {
+        	Map.Entry<String,Integer> entry = it.next();
+        	String key = entry.getKey();
+        	Integer value = entry.getValue();
+        	
+        	if(value > maxCount)
+        	{
+        		maxCount = value;
+        		maxKey = key;
+        	}
+        }
+        
+        return maxKey;
+    }
+    
+    /**
      * Uses boundary checking to enumerate all possible subsets of a String
      * @param input
      * @param n
      * @return
      */
-    private static String mostFrequentNgramFinal(String input, int n)
+    private static String mostFrequentNgramBoundary(String input, int n)
     {
     	// TODO: Input validation check E.g. Null and n is within length range
     	
